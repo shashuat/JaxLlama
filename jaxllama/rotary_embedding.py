@@ -19,3 +19,9 @@ class LlamaRotaryEmbedding(ConfigModule):
         q_emb = queries * cos + rotate_half(queries) * sin
         k_emb = keys * cos + rotate_half(keys) * sin
         return q_emb, k_emb
+    
+def rotate_half(x):
+    n = x.shape[-1] // 2
+    x1 = x[..., :n]
+    x2 = x[..., n:]
+    return jnp.concatenate([-x2, x1], axis=-1)
