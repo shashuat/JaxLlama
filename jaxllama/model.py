@@ -3,7 +3,7 @@ from collections import namedtuple
 from functools import partial
 import logging
 import warnings
-
+import jax
 import haiku as hk
 from jax.ad_checkpoint import checkpoint_name
 from .attention import LlamaAttention
@@ -36,12 +36,6 @@ class VarianceOnlyLayerNorm(ConfigModule):
         )
         x = x * jax.lax.rsqrt(variance + self.config.rms_norm_eps)
         return (x * scale).astype(get_dtype())
-
-def rotate_half(x):
-    n = x.shape[-1] // 2
-    x1 = x[..., :n]
-    x2 = x[..., n:]
-    return jnp.concatenate([-x2, x1], axis=-1)
 
 class LlamaMLP(ConfigModule):
     def __call__(self, x):
